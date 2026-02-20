@@ -22,6 +22,8 @@ data class FloatingText(
     // Neon retrowave colors
     private val colorCyan = Color.rgb(0, 255, 255)      // Neon cyan
     private val colorMagenta = Color.rgb(255, 0, 255)   // Magenta for combos
+    private val colorRed = Color.rgb(255, 80, 80)       // Red for life lost
+    private val colorGold = Color.rgb(255, 215, 0)      // Gold for bonus
     
     // Movement speed upward
     private val floatSpeed: Float = if (isCombo) 1.5f else 2.5f
@@ -32,14 +34,26 @@ data class FloatingText(
     // Scale animation
     private var scaleVelocity: Float = 0f
     
-    // Paint for drawing text
+    // Determine color based on text content
+    private fun getTextColor(): Int = when {
+        text.contains("-1") || text.contains("−1") -> colorRed  // Life lost (red)
+        text.contains("+1 LIFE") -> Color.rgb(100, 255, 100)    // Life gained (green)
+        text.contains("LEVEL") -> colorGold                      // Level up (gold)
+        text.contains("SHIELD") -> Color.rgb(0, 200, 255)
+        isCombo -> colorMagenta
+        text.contains("GOLD") || text.contains("50") -> colorGold
+        else -> colorCyan
+    }
+    
+    // Paint for drawing text - LARGER sizes
     private val paint = Paint().apply {
         isAntiAlias = true
-        color = if (isCombo) colorMagenta else colorCyan
+        val textColor = getTextColor()
+        color = textColor
         textAlign = Paint.Align.CENTER
-        textSize = if (isCombo) 65f else 48f
+        textSize = if (isCombo) 80f else 60f  // LARGER
         typeface = Typeface.DEFAULT_BOLD
-        setShadowLayer(if (isCombo) 20f else 12f, 0f, 0f, if (isCombo) colorMagenta else colorCyan)
+        setShadowLayer(if (isCombo) 25f else 15f, 0f, 0f, textColor)
     }
 
     /**
@@ -89,14 +103,35 @@ data class FloatingText(
     companion object {
         /**
          * Create a floating score text at the specified position
+         * Handles special cases: -1 = life lost, 0 = shield blocked
          */
         fun createScorePopup(x: Float, y: Float, points: Int, hasCombo: Boolean = false): FloatingText {
+            val displayText = when {
+                points == -1 -> "−1 LIFE!"
+                points == 0 -> "SHIELD!"
+                hasCombo && points >= 50 -> "+$points GOLD!"
+                else -> "+$points"
+            }
             return FloatingText(
                 x = x,
                 y = y,
-                text = "+$points",
-                isCombo = false,
-                scale = 1.3f  // Start slightly larger for pop effect
+                text = displayText,
+                isCombo = points == -1 || points == 0,  // Make life/shield messages more prominent
+                scale = if (points == -1) 1.5f else 1.3f  // Larger for life lost
+            )
+        }
+        
+        /**
+         * Create a floating text with custom message (for LEVEL UP, +1 LIFE etc.)
+         */
+        fun createScorePopup(x: Float, y: Float, message: String): FloatingText {
+            val isImportant = message.contains("LEVEL") || message.contains("LIFE")
+            return FloatingText(
+                x = x,
+                y = y,
+                text = message,
+                isCombo = isImportant,
+                scale = if (isImportant) 1.5f else 1.3f
             )
         }
         

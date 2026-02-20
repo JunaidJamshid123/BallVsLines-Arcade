@@ -31,14 +31,12 @@
 ### 🎬 Gameplay Video
 
 <p align="center">
-  <a href="https://github.com/JunaidJamshid123/BallVsLines-Arcade/raw/main/game_ss/demo_vid.mp4">
-    <img src="game_ss/ss1.png" alt="Click to download gameplay video" width="250"/>
-    <br/>
-    <b>📥 Click to Download Demo Video</b>
-  </a>
+  <video src="https://github.com/JunaidJamshid123/BallVsLines-Arcade/raw/main/game_ss/demo_vid.mp4" width="300" autoplay loop muted playsinline>
+    Your browser does not support the video tag.
+  </video>
 </p>
 
-> *Note: Click above to download the gameplay video (11.8 MB)*
+> *Video plays automatically. Click to download: [demo_vid.mp4](https://github.com/JunaidJamshid123/BallVsLines-Arcade/raw/main/game_ss/demo_vid.mp4)*
 
 ---
 
